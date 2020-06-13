@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>blockchat</title>
+  <link href="css/app.css" rel="stylesheet">
+  <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/web3.min.js"></script>
+  <script src="js/truffle-contract.js"></script>
+  <script src="js/app.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js" integrity="sha256-/H4YS+7aYb9kJ5OKhFYPUjSJdrtV6AeyJOtTkw6X72o=" crossorigin="anonymous"></script>
+  <!--favicon code-->
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <!--favicon code-->
+</head>
+
+<body class="main">
+ <div class="content">
+  <h1>BLOCKCHAT</h1><br>
+  <h2>The Ethereum Messenger</h2>
+  <hr style="
+    height: 20px;
+    border: 0;
+    box-shadow: inset 0 12px 20px -12px rgba(11, 12, 12, 0.7);"
+ />
+  <br>
+
+  <label class="one">Contract address:</label> <br><br>
+  <a target="_blank" type="addressLinks" id="contractAddress" spellcheck="false">Could not load</a>
+  <br><br><br>
+
+  <label class="two">Contract owner:</label> <br><br>
+  <a target="_blank" type="addressLinks" id="contractOwner" spellcheck="false">Could not load</a>
+  <br><br><br>
+
+  <label class="three">Your address:</label> <br><br>
+  <a target="_blank" type="addressLinks" id="myAddress" spellcheck="false">Could not load</a>
+  <br><br><br>
+
+  <label class="four">Your balance:</label> <br><br>
+  <textarea type="mySimpleLabel" id="myBalance" spellcheck="false">0 Ether</textarea>
+  <br><br><br>
+
+  <br>
+  <label class="five">User directory:</label> <br><br>
+  <input type="myDefaultButton" class="copyButton" value="COPY" readonly onclick="App.copyAddressToSend()" style="float:right"></input>
+  <input type="myDefaultButton" class="addButton" value="SELECT" readonly onclick="App.copyAddressToMultipleSend()" style="float:right"></input>
+  <input type="myDefaultButton" class="addButton" value="ADD" readonly onclick="App.copyAddressToGroupSend()" style="float:right"></input>
+  <div style="overflow: hidden; padding-right: 10px;">
+    <select type="registeredUsersAddressMenu" id='registeredUsersAddressMenu' style="border: 2px solid blueviolet"></select>​
+  </div>
+  <br><br>
+
+  <label class="six">Send to:</label> <br><br>
+  <textarea type="myInputTextArea" id="receiver" spellcheck="false" style="width: 95%;" maxlength="42" rows="1"></textarea>
+  <br><br><br>
+
+  <label class="six">Broadcast to:</label> <br><br>
+  <textarea type="myInputTextArea" id="multiplereceiver" spellcheck="false" style="width: 95%;" maxlength="42" rows="3"></textarea>
+  <br><br><br>
+
+  <label class="six">Add to Group:</label> <br><br>
+  <textarea type="myInputTextArea" id="groupreceiver" spellcheck="false" style="width: 40%;" maxlength="42" rows="2"></textarea>
+  <textarea type="myInputTextArea" id="groupname" placeholder="group name" spellcheck="false" style="width: 30%;" maxlength="42" rows="1"></textarea>
+  <input type="myDefaultButton" class="addButton" value="CREATE" readonly  onclick="App.createGroup()" style=width: 50px;"></input>
+  <br><br><br>
+  <label class="six">Group Picker:</label> <br><br>
+  <div style="overflow: hidden; padding-right: 10px;">
+    <select type="registeredUsersAddressMenu" id='registeredGroups' style="border: 2px solid blueviolet"></select>​
+  </div>
+  <br><br>
+
+
+  <br><br><br>
+
+  <br><label class="seven">Message:</label> <br><br>
+  <input type="myDefaultButton"  class="sendButton" id="sendMessageButton" value="Send" readonly onclick="App.sendMessage()" style="float:right"></input>
+  <input type="myDefaultButton"  class="sendButton" id="sendMessageButton" value="Broadcast" readonly onclick="App.broadcastMessages()" style="float:right"></input>
+  <input type="myDefaultButton"  class="sendButton" id="sendMessageButton" value="Group" readonly onclick="App.sendGroupMessage()" style="float:right"></input>
+  <!--<input type="myDefaultButton"  class="sendButton" id="sendMessageButton" value="Group" readonly onclick="App.sendgroupMessage()" style="float:right"></input>-->
+  <div style="overflow: hidden; padding-right: 10px;">
+    <textarea type="messageTextArea" id="message" maxlength="30" rows="1"></textarea>​
+  </div>
+
+  <div id="receivedTable" style="display:none;">
+    <br><label>Received:</label> <br><br>
+    <input type="myDefaultButton" id="replyButton" value="Reply" onclick="App.replyToMessage()" style="float:right"></input>
+    <div style="overflow: hidden; padding-right: 10px;">
+      <textarea type="messageTextArea" id='reply'></textarea>​
+    </div>
+    <br><br>
+    <table id='mytable' style="margin-top: -5px;">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>From</th>
+          <th style="display:none;">Content</th>
+        </tr>
+      </thead>
+      <tbody id="mytable-tbody">
+      </tbody>
+    </table>
+  </div>
+
+  <!--Recieved group table-->
+  <div id="receivedGroupTable" style="display:none;">
+    <br><label>Received:</label> <br><br>
+    <!--<input type="myDefaultButton" id="replyButton" value="Reply" onclick="App.replyToMessage()" style="float:right"></input>-->
+    <div style="overflow: hidden; padding-right: 10px;">
+      <textarea type="messageTextArea" id='replygroup'></textarea>​
+    </div>
+    <br><br>
+    <table id='myGrouptable' style="margin-top: -5px;">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>From</th>
+          <th>Group</th>
+          <th style="display:none;">Content</th>
+        </tr>
+      </thead>
+      <tbody id="myGrouptable-tbody">
+      </tbody>
+    </table>
+  </div>
+  <br>
+  <label class="eight">Status:</label> <br><br>
+  <span id="status" style="overflow: hidden; word-wrap: break-word;display: inline-block;white-space: pre-wrap; font-size:12px; margin:0px; Color:blue"> Welcome to the Chatroom</span>
+</div>
+
+</body>
+
+
+</html>
